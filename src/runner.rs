@@ -2,8 +2,10 @@ use std::net::SocketAddr;
 
 use colored::Colorize;
 
-use crate::config::Config;
-use crate::scenario::{AppType, Scenario};
+use crate::{
+    config::Config,
+    scenario::{AppType, Scenario},
+};
 
 /// A single endpoint to test, derived from either the CLI args or a config site.
 pub struct Target {

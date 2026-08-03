@@ -1,5 +1,4 @@
-use std::fs;
-use std::net::SocketAddr;
+use std::{fs, net::SocketAddr};
 
 use anyhow::Context;
 use serde::Deserialize;
@@ -62,10 +61,7 @@ jds_address = "10.0.0.5:34256"
             sri.jds_address,
             Some("51.161.49.55:34256".parse().expect("valid addr"))
         );
-        assert_eq!(
-            sri.scenarios,
-            Some(vec!["setup-connection".to_string()])
-        );
+        assert_eq!(sri.scenarios, Some(vec!["setup-connection".to_string()]));
 
         let jds_only = &config.site[1];
         assert_eq!(jds_only.name, "JDS Only");

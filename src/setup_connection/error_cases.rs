@@ -21,8 +21,13 @@ pub async fn test_rejected_unsupported_protocol(
     target: SocketAddr,
     wrong_protocol: Protocol,
 ) -> (SetupConnectionError<'static>, Sniffer<'static>) {
-    test_rejected_setup(target, wrong_protocol, 0, ERROR_CODE_SETUP_CONNECTION_UNSUPPORTED_PROTOCOL)
-        .await
+    test_rejected_setup(
+        target,
+        wrong_protocol,
+        0,
+        ERROR_CODE_SETUP_CONNECTION_UNSUPPORTED_PROTOCOL,
+    )
+    .await
 }
 
 /// Sends a `SetupConnection` to a JDS with `JobDeclarationProtocol` but without
@@ -50,15 +55,12 @@ pub async fn test_rejected_setup(
     flags: u32,
     expected_error_code: &str,
 ) -> (SetupConnectionError<'static>, Sniffer<'static>) {
-    let (sniffer, sniffer_addr) =
-        start_sniffer("setup_error", target, false, vec![], None);
+    let (sniffer, sniffer_addr) = start_sniffer("setup_error", target, false, vec![], None);
 
-    let _downstream = MockDownstream::new(
-        sniffer_addr,
-        WithSetup::yes_with_defaults(protocol, flags),
-    )
-    .start()
-    .await;
+    let _downstream =
+        MockDownstream::new(sniffer_addr, WithSetup::yes_with_defaults(protocol, flags))
+            .start()
+            .await;
 
     sniffer
         .wait_for_message_type(MessageDirection::ToUpstream, MESSAGE_TYPE_SETUP_CONNECTION)

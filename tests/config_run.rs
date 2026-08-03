@@ -5,10 +5,12 @@ use integration_tests_sv2::{
     template_provider::DifficultyLevel,
 };
 
-use interoperability_tests_sv2::config::Config;
-use interoperability_tests_sv2::runner::{build_targets, run_targets};
-use interoperability_tests_sv2::scenario::{AppType, Scenario};
-use interoperability_tests_sv2::setup_connection;
+use interoperability_tests_sv2::{
+    config::Config,
+    runner::{build_targets, run_targets},
+    scenario::{AppType, Scenario},
+    setup_connection,
+};
 
 fn scenarios() -> Vec<Scenario> {
     vec![Scenario::new(

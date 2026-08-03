@@ -4,10 +4,12 @@ use clap::Parser;
 use colored::Colorize;
 use integration_tests_sv2::start_tracing;
 
-use interoperability_tests_sv2::config::Config;
-use interoperability_tests_sv2::runner::{build_targets, print_summary, run_targets, Target};
-use interoperability_tests_sv2::scenario::{AppType, Scenario};
-use interoperability_tests_sv2::setup_connection;
+use interoperability_tests_sv2::{
+    config::Config,
+    runner::{build_targets, print_summary, run_targets, Target},
+    scenario::{AppType, Scenario},
+    setup_connection,
+};
 
 fn scenarios() -> Vec<Scenario> {
     vec![Scenario::new(

@@ -1,6 +1,4 @@
-use std::future::Future;
-use std::net::SocketAddr;
-use std::pin::Pin;
+use std::{future::Future, net::SocketAddr, pin::Pin};
 
 use clap::ValueEnum;
 use stratum_apps::stratum_core::common_messages_sv2::Protocol;

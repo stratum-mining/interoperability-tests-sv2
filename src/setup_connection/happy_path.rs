@@ -25,15 +25,12 @@ pub async fn test_successful_setup(
     protocol: Protocol,
     flags: u32,
 ) -> (SetupConnectionSuccess, Sniffer<'static>) {
-    let (sniffer, sniffer_addr) =
-        start_sniffer("setup_happy", target, false, vec![], None);
+    let (sniffer, sniffer_addr) = start_sniffer("setup_happy", target, false, vec![], None);
 
-    let _downstream = MockDownstream::new(
-        sniffer_addr,
-        WithSetup::yes_with_defaults(protocol, flags),
-    )
-    .start()
-    .await;
+    let _downstream =
+        MockDownstream::new(sniffer_addr, WithSetup::yes_with_defaults(protocol, flags))
+            .start()
+            .await;
 
     sniffer
         .wait_for_message_type(MessageDirection::ToUpstream, MESSAGE_TYPE_SETUP_CONNECTION)
