@@ -1,0 +1,12 @@
+# Example targets file for `sv2-compliance --config targets.toml`
+#
+# Each [[site]] is one deployment.  Only the addresses you provide are tested:
+#   mining_server_address          -> tested as a Mining Protocol Server
+#   job_declaration_server_address -> Job Declarator Server (no scenarios yet, see COVERAGE.md)
+#   template_provider_address      -> Template Provider (no scenarios yet, see COVERAGE.md)
+#
+# `user_identity` (optional) is used when opening mining channels.
+
+[[site]]
+name = "SRI Community SoloPool"
+mining_server_address = "75.119.150.111:3333"
