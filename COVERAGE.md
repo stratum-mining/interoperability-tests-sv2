@@ -88,9 +88,10 @@ Cross-cutting invariants with no single home message.
 | C-SC-4 | Ω2 | Θ1 | Server that serves Standard Channels (does not set `REQUIRES_EXTENDED_CHANNELS`) rejects a `SetupConnection` carrying `REQUIRES_STANDARD_JOBS` (bit 0) — fails the most basic client class | [§5.2.2](https://github.com/stratum-mining/sv2-spec/blob/main/05-Mining-Protocol.md#522-extended-channel) "MUST also accept Standard Channels unless they set `REQUIRES_EXTENDED_CHANNELS`" (derived: no sentence requires accepting `REQUIRES_STANDARD_JOBS`) | Send `SetupConnection` without bit 0; if `.Success.flags` lacks `REQUIRES_EXTENDED_CHANNELS`, a fresh connection with `REQUIRES_STANDARD_JOBS` must get `.Success` | `SetupConnection.Success`, `SetupConnection.Error` |
 | C-SC-5 | Ω1 | Θ1 | Server sets `REQUIRES_EXTENDED_CHANNELS` in `.Success.flags` but then accepts `OpenStandardMiningChannel` instead of responding with `OpenMiningChannel.Error` | [§5.3.1](https://github.com/stratum-mining/sv2-spec/blob/main/05-Mining-Protocol.md#531-setupconnection-flags-for-mining-protocol) "If it does, the server MUST respond with `OpenMiningChannel.Error`" | After a `.Success` carrying `REQUIRES_EXTENDED_CHANNELS`, send `OpenStandardMiningChannel`; assert `OpenMiningChannel.Error` (only if the server sets `REQUIRES_EXTENDED_CHANNELS`) | `SetupConnection.Success`, `OpenStandardMiningChannel`, `OpenMiningChannel.Error` |
 | C-SC-6 | Ω1 | Θ1 | Server sets `REQUIRES_FIXED_VERSION` but later sends `NewExtendedMiningJob` with `version_rolling_allowed = True` | [§5.3.1](https://github.com/stratum-mining/sv2-spec/blob/main/05-Mining-Protocol.md#531-setupconnection-flags-for-mining-protocol) "if this bit is set, extended jobs MUST NOT indicate support for version rolling" | Cross-message consistency (only if the server sets `REQUIRES_FIXED_VERSION`) | `NewExtendedMiningJob` |
-| C-SC-7 | Ω1 | Θ1 | Server accepts `SetupConnection` with an unsupported or invalid `protocol` value | [§3.6.1](https://github.com/stratum-mining/sv2-spec/blob/main/03-Protocol-Overview.md#361-setupconnection-client---server) "If the server does not support the requested `protocol`, it MUST respond with `SetupConnection.Error`" | Send `SetupConnection` with `protocol=3` (invalid for any server) and, where the suite's target does not serve it, `protocol=1` (Job Declaration); assert `SetupConnection.Error` | `SetupConnection.Error` |
+| C-SC-7 | Ω1 | Θ1 | Server accepts `SetupConnection` with a `protocol` it does not serve | [§3.6.1](https://github.com/stratum-mining/sv2-spec/blob/main/03-Protocol-Overview.md#361-setupconnection-client---server) "If the server does not support the requested `protocol`, it MUST respond with `SetupConnection.Error`" | Send `SetupConnection` with a valid `protocol` the suite's target does not serve (e.g. `protocol=1`, Job Declaration, against a Mining Protocol Server); assert `SetupConnection.Error` | `SetupConnection.Error` |
 | C-SC-8 | Ω1 | Θ1 | Server accepts `SetupConnection` with no supported version in the offered range (e.g. `(3,3)`, `(3,2)`, `(1,1)`) or closes without first sending `SetupConnection.Error` | [§3.6.1](https://github.com/stratum-mining/sv2-spec/blob/main/03-Protocol-Overview.md#361-setupconnection-client---server) "If the server supports no protocol version between `min_version` and `max_version` inclusive, it MUST respond with `SetupConnection.Error`" | Send version ranges with no overlap with 2; assert framed `SetupConnection.Error` before TCP close | `SetupConnection.Error` |
 | C-SC-9 | Ω2 | Θ1 | Server crashes or drops the connection on 255-byte device-info strings (`vendor`, `hardware_version`, `firmware`, `device_id`) | [§3.1](https://github.com/stratum-mining/sv2-spec/blob/main/03-Protocol-Overview.md#31-data-types-mapping) `STR0_255` "Allowed range of length is 0 to 255" (derived) | Send `SetupConnection` with 255-byte strings; assert a framed `.Success` or `.Error` | `SetupConnection.Success`, `SetupConnection.Error` |
+| C-SC-10 | Ω1 | Θ1 | Server accepts `SetupConnection` with a `protocol` value outside the ones the spec defines | [§3.6.1](https://github.com/stratum-mining/sv2-spec/blob/main/03-Protocol-Overview.md#361-setupconnection-client---server) "If the server does not support the requested `protocol`, it MUST respond with `SetupConnection.Error`" (`protocol` defines only 0, 1 and 2, so a server cannot support any other value) | Send `SetupConnection` with `protocol=3`; assert `SetupConnection.Error`. Needs a hand-built frame, since a typed client cannot encode an undefined `protocol` | `SetupConnection.Error` |
 
 #### `SetupConnection.Success` ([§3.6.2](https://github.com/stratum-mining/sv2-spec/blob/main/03-Protocol-Overview.md#362-setupconnectionsuccess-server---client))
 
@@ -348,11 +349,12 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | C-SC-4 — `REQUIRES_STANDARD_JOBS` accepted by a standard-serving server | ❌ |
 | C-SC-5 — standard channel accepted despite `REQUIRES_EXTENDED_CHANNELS` | ❌ |
 | C-SC-6 — `REQUIRES_FIXED_VERSION` + `version_rolling_allowed` consistency | ❌ |
-| C-SC-7 — unsupported or invalid `protocol` value | ❌ |
-| C-SC-8 — version range with no supported version | ❌ |
+| C-SC-7 — unsupported `protocol` value | ✅ |
+| C-SC-8 — version range with no supported version | ✅ |
 | C-SC-9 — 255-byte device-info strings | ❌ |
-| C-SCS-1 — `SetupConnection` response type / TCP close vs framed error | ❌ |
-| C-SCS-2 — `used_version` within negotiated range | ❌ |
+| C-SC-10 — undefined `protocol` value | ❌ |
+| C-SCS-1 — `SetupConnection` response type / TCP close vs framed error | ✅ |
+| C-SCS-2 — `used_version` within negotiated range | ✅ |
 | C-SCE-1 — feature-probing missing/mismatched error flags | ❌ |
 | C-SCE-2 — flag-set stability across connections | ❌ |
 | C-SCE-3 — `REQUIRES_STANDARD_JOBS` rejection reports bit 0 | ❌ |
@@ -360,14 +362,14 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | M-OSMC-2 — inactivity timeout on idle mining connection | ❌ |
 | M-OSMC-3 — no response to standard channel open | ❌ |
 | M-OSMC-4 — standard channel rejected without `REQUIRES_EXTENDED_CHANNELS` | ❌ |
-| M-OSMCS-1 — `request_id` echo in channel open success | ❌ |
+| M-OSMCS-1 — `request_id` echo in channel open success | ✅ |
 | M-OSMCS-2 — `channel_id` uniqueness | ❌ |
 | M-OSMCS-3 — `extranonce_prefix` uniqueness | ❌ |
 | M-OEMC-1 — Extended channel support | ❌ |
 | M-OEMC-2 — no response to extended channel open | ❌ |
-| M-OEMCS-1 — `request_id` echo in extended open success | ❌ |
+| M-OEMCS-1 — `request_id` echo in extended open success | ✅ |
 | M-OEMCS-2 — `channel_id` uniqueness (extended) | ❌ |
-| M-OEMCS-3 — `extranonce_size` vs `min_extranonce_size` | ❌ |
+| M-OEMCS-3 — `extranonce_size` vs `min_extranonce_size` | ✅ |
 | M-OEMCS-4 — same group, different full extranonce sizes | ❌ |
 | M-OEMCS-5 — extranonce space uniqueness (extended) | ❌ |
 | M-OEMCS-6 — `extranonce_size > 32` | ❌ |
@@ -403,14 +405,14 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | M-SSOK-2 — `last_sequence_number` audit | ❌ |
 | M-SSERR-1 — `SubmitShares.Error` always sent for bad submits | ❌ |
 | M-SSERR-2 — `SubmitShares.Error` sequence_number pairing | ❌ |
-| M-NMJ-1 — first message after standard open is a job | ❌ |
-| M-NMJ-2 — first standard job `ntime_start` unset | ❌ |
+| M-NMJ-1 — first message after standard open is a job | ✅ |
+| M-NMJ-2 — first standard job `ntime_start` unset | ✅ |
 | M-NMJ-3 — `NewMiningJob` channel-kind cross-check | ❌ |
 | M-NMJ-4 — standard `job_id` uniqueness | ❌ |
 | M-NMJ-5 — version-rolling share acceptance (standard) | ❌ |
 | M-NMJ-6 — active job `ntime_start` below latest `SetNewPrevHash` | ❌ |
-| M-NEMJ-1 — first message after extended open is a job | ❌ |
-| M-NEMJ-2 — first extended job `ntime_start` unset | ❌ |
+| M-NEMJ-1 — first message after extended open is a job | ✅ |
+| M-NEMJ-2 — first extended job `ntime_start` unset | ✅ |
 | M-NEMJ-3 — `NewExtendedMiningJob` channel-kind cross-check | ❌ |
 | M-NEMJ-4 — `NewExtendedMiningJob` vs `REQUIRES_STANDARD_JOBS` | ❌ |
 | M-NEMJ-5 — BIP141 stripping in coinbase tx data | ❌ |
