@@ -348,11 +348,11 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | C-SC-4 — `REQUIRES_STANDARD_JOBS` accepted by a standard-serving server | ❌ |
 | C-SC-5 — standard channel accepted despite `REQUIRES_EXTENDED_CHANNELS` | ❌ |
 | C-SC-6 — `REQUIRES_FIXED_VERSION` + `version_rolling_allowed` consistency | ❌ |
-| C-SC-7 — unsupported or invalid `protocol` value | ❌ |
-| C-SC-8 — version range with no supported version | ❌ |
+| C-SC-7 — unsupported or invalid `protocol` value | ✅ |
+| C-SC-8 — version range with no supported version | ✅ |
 | C-SC-9 — 255-byte device-info strings | ❌ |
-| C-SCS-1 — `SetupConnection` response type / TCP close vs framed error | ❌ |
-| C-SCS-2 — `used_version` within negotiated range | ❌ |
+| C-SCS-1 — `SetupConnection` response type / TCP close vs framed error | ✅ |
+| C-SCS-2 — `used_version` within negotiated range | ✅ |
 | C-SCE-1 — feature-probing missing/mismatched error flags | ❌ |
 | C-SCE-2 — flag-set stability across connections | ❌ |
 | C-SCE-3 — `REQUIRES_STANDARD_JOBS` rejection reports bit 0 | ❌ |
@@ -360,14 +360,14 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | M-OSMC-2 — inactivity timeout on idle mining connection | ❌ |
 | M-OSMC-3 — no response to standard channel open | ❌ |
 | M-OSMC-4 — standard channel rejected without `REQUIRES_EXTENDED_CHANNELS` | ❌ |
-| M-OSMCS-1 — `request_id` echo in channel open success | ❌ |
+| M-OSMCS-1 — `request_id` echo in channel open success | ✅ |
 | M-OSMCS-2 — `channel_id` uniqueness | ❌ |
 | M-OSMCS-3 — `extranonce_prefix` uniqueness | ❌ |
 | M-OEMC-1 — Extended channel support | ❌ |
 | M-OEMC-2 — no response to extended channel open | ❌ |
-| M-OEMCS-1 — `request_id` echo in extended open success | ❌ |
+| M-OEMCS-1 — `request_id` echo in extended open success | ✅ |
 | M-OEMCS-2 — `channel_id` uniqueness (extended) | ❌ |
-| M-OEMCS-3 — `extranonce_size` vs `min_extranonce_size` | ❌ |
+| M-OEMCS-3 — `extranonce_size` vs `min_extranonce_size` | ✅ |
 | M-OEMCS-4 — same group, different full extranonce sizes | ❌ |
 | M-OEMCS-5 — extranonce space uniqueness (extended) | ❌ |
 | M-OEMCS-6 — `extranonce_size > 32` | ❌ |
@@ -403,13 +403,13 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | M-SSOK-2 — `last_sequence_number` audit | ❌ |
 | M-SSERR-1 — `SubmitShares.Error` always sent for bad submits | ❌ |
 | M-SSERR-2 — `SubmitShares.Error` sequence_number pairing | ❌ |
-| M-NMJ-1 — first message after standard open is a job | ❌ |
+| M-NMJ-1 — first message after standard open is a job | ✅ |
 | M-NMJ-2 — first standard job `ntime_start` unset | ❌ |
 | M-NMJ-3 — `NewMiningJob` channel-kind cross-check | ❌ |
 | M-NMJ-4 — standard `job_id` uniqueness | ❌ |
 | M-NMJ-5 — version-rolling share acceptance (standard) | ❌ |
 | M-NMJ-6 — active job `ntime_start` below latest `SetNewPrevHash` | ❌ |
-| M-NEMJ-1 — first message after extended open is a job | ❌ |
+| M-NEMJ-1 — first message after extended open is a job | ✅ |
 | M-NEMJ-2 — first extended job `ntime_start` unset | ❌ |
 | M-NEMJ-3 — `NewExtendedMiningJob` channel-kind cross-check | ❌ |
 | M-NEMJ-4 — `NewExtendedMiningJob` vs `REQUIRES_STANDARD_JOBS` | ❌ |

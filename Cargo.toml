@@ -10,5 +10,16 @@ repository = "https://github.com/stratum-mining/interoperability-tests-sv2"
 license = "MIT OR Apache-2.0"
 keywords = ["stratum", "mining", "bitcoin", "protocol", "sv2", "interoperability"]
 
+[[bin]]
+name = "sv2-compliance"
+path = "src/bin/sv2_compliance.rs"
+
 [dependencies]
-integration_tests_sv2 = "0.4.0"
+integration_tests_sv2 = { git = "https://github.com/stratum-mining/sv2-apps", branch = "main" }
+stratum-apps = { git = "https://github.com/stratum-mining/sv2-apps", branch = "main", default-features = false, features = ["core"] }
+async-channel = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "net"] }
+clap = { version = "4", features = ["derive"] }
+colored = "2"
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
