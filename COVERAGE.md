@@ -386,7 +386,7 @@ Reserved for a future Template Distribution Server suite. No scenarios yet.
 | M-OSMC-1 — target vs `max_target` on channel open | ❌ |
 | M-OSMC-2 — inactivity timeout on idle mining connection | ❌ |
 | M-OSMC-3 — no response to standard channel open | ❌ |
-| M-OSMC-4 — standard channel rejected without `REQUIRES_EXTENDED_CHANNELS` | ❌ |
+| M-OSMC-4 — standard channel rejected without `REQUIRES_EXTENDED_CHANNELS` | ✅ |
 | M-OSMC-5 — non-printable `user_identity` (standard) | ❌ |
 | M-OSMC-6 — invalid `F32` `nominal_hash_rate` (standard) | ❌ |
 | M-OSMCS-1 — `request_id` echo in channel open success | ✅ |
